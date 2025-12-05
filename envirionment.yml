@@ -1,0 +1,25 @@
+name: d100_env
+channels:
+  - conda-forge
+  - nodefaults
+dependencies:
+  # defaults
+  - python>=3.8
+  - pip
+  - pre-commit
+  - pytest>=6 
+  - pytest-cov
+  - setuptools-scm
+  # data
+  - pandas
+  - numpy
+  - dask-ml
+  - ydata-profiling
+  # interactive
+  - ipykernel
+  # plots
+  - matplotlib
+  # ml
+  - glum
+  - lightgbm
+  - scikit-learn
