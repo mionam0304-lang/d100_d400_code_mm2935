@@ -7,7 +7,7 @@ dependencies:
   - python>=3.8
   - pip
   - pre-commit
-  - pytest>=6 
+  - pytest>=6
   - pytest-cov
   - setuptools-scm
   # data
@@ -15,6 +15,7 @@ dependencies:
   - numpy
   - dask-ml
   - ydata-profiling
+  - polars #追加できているかきちんと確認
   # interactive
   - ipykernel
   # plots
@@ -23,3 +24,5 @@ dependencies:
   - glum
   - lightgbm
   - scikit-learn
+  - pip:
+      - kagglehub #追加できているかきちんと確認
