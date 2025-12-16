@@ -20,26 +20,44 @@ def preprocess(df: pl.DataFrame) -> pl.DataFrame:
     df = df.with_columns(
         pl.when(
             pl.col("company_location").is_in(
-                ["China", "India", "Japan", "South Korea", "Israel"]
+                [
+                    "China",
+                    "India",
+                    "Singapore",
+                    "South Korea",
+                    "Israel",
+                    "Japan",
+                ]
             )
         )
         .then(pl.lit("Asia"))
         .when(
             pl.col("company_location").is_in(
                 [
+                    "Switzerland",
+                    "France",
                     "Germany",
                     "United Kingdom",
                     "Austria",
-                    "Switzerland",
+                    "Sweden",
                     "Norway",
-                    "Finland",
+                    "Netherlands",
                     "Ireland",
+                    "Denmark",
+                    "Finland",
                 ]
             )
         )
         .then(pl.lit("Europe"))
-        .when(pl.col("company_location") == "United States")
-        .then(pl.lit("US"))
+        .when(
+            pl.col("company_location").is_in(
+                [
+                    "United States",
+                    "Canada",
+                ]
+            )
+        )
+        .then(pl.lit("North America"))
         .when(pl.col("company_location") == "Australia")
         .then(pl.lit("Australia"))
         .otherwise(pl.lit("Other"))  # Please reconsider the clarification if it happens
