@@ -1,22 +1,33 @@
 ### Start this project
 
+Run the below code before this project
+
 conda d100_env create
 conda activate d100_env
 
 pre-commit install
 pip install --no-build-isolation -e .
 
-### How to carry out this project
+### How to proceed this project
 
+eda_cleaning.ipynb: This is an EDA note book explaing the overall dataset.
+
+Code for preprocessing and creating the dataset:
+python -m data.prepare_data
+
+Code for modeling:
 python -m modeling.model_training
 python -m modeling.model_tuning
 
-### Tests
+Code for testing my transformer:
+pytest
 
-Run unit tests from the project root:
+Code for evaluating:
+python -m evaluating.evaluating_model
+python -m evaluating.compare_model
 
-```bash
-pytest -q
+Check the result of evaluation:
+In the reports\figures folder, you can find the “predicted vs. actual” plots and the relevant features.
 
 ### Geographic aggregation of company locations
 
@@ -36,16 +47,3 @@ pytest -q
 - Consumer & Transport：Transportation, Retail
 - Media & Entertainment：Media, Gaming
 - Consulting：Consulting
-- Other：
-
-features_columns: - "employment_type" - "company_size" - "education_required" - "years_experience" - "company_area" - "industry_group" - "num_skills"
-
-### 作成中
-
-model:
-name: "model_1"
-type: "classification"
-params:
-max_iter: 100
-random_state: 42
-```

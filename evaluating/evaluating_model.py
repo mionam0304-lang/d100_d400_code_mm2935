@@ -6,6 +6,8 @@ from data import create_sample_split
 from evaluating import evaluate_predictions
 from modeling._common import CAT_COLS, NUM_COLS, TARGET
 
+print(CAT_COLS, NUM_COLS)
+
 # ----------------------------
 # Load cleaned data + split (same deterministic split)
 # ----------------------------
