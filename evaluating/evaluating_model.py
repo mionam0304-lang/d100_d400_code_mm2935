@@ -1,9 +1,9 @@
 import numpy as np
 import polars as pl
-from evaluation._evaluation import evaluate_predictions
 from joblib import load
 
 from data import create_sample_split
+from evaluating import evaluate_predictions
 from modeling._common import CAT_COLS, NUM_COLS, TARGET
 
 # ----------------------------
@@ -16,7 +16,7 @@ test_df = df.filter(pl.col("sample") == "test")
 
 feature_cols = NUM_COLS + CAT_COLS
 
-# scikit-learn pipelines want pandas-like inputs
+# scikit-learn pipelines want panmdas-like inputs
 X_test = test_df.select(feature_cols).to_pandas()
 y_test = test_df.select(TARGET).to_numpy().ravel()
 

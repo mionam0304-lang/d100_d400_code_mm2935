@@ -17,12 +17,11 @@ TARGET = "salary_usd"
 
 NUM_COLS = [
     "years_experience",
-    "num_skills",
 ]
 
 CAT_COLS = [
     "employment_type",
-    "company_area",
+    "company_location",
     "industry_group",
     "education_required",
     "company_size",

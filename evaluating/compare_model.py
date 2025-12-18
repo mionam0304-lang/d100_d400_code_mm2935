@@ -3,15 +3,15 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
 import polars as pl
-from evaluation._evaluation import evaluate_predictions
 from joblib import load
 from sklearn.inspection import PartialDependenceDisplay
 
 from data import create_sample_split
+from evaluating import evaluate_predictions
 from modeling._common import CAT_COLS, NUM_COLS, TARGET
 
 # ----------------------------
-# Settings / 設定
+# Settings
 # ----------------------------
 OUT_DIR = Path("reports/figures")
 OUT_DIR.mkdir(parents=True, exist_ok=True)
@@ -21,7 +21,7 @@ PDP_DIR.mkdir(parents=True, exist_ok=True)
 
 
 def predicted_vs_actual(y_true, y_pred, title: str, out_path: Path) -> None:
-    # Predicted vs Actual plot / 予測と実測の散布図
+    # Predicted vs Actual plot
     plt.figure()
     plt.scatter(y_true, y_pred, s=10, alpha=0.3)
     lo = float(min(np.min(y_true), np.min(y_pred)))
@@ -36,7 +36,6 @@ def predicted_vs_actual(y_true, y_pred, title: str, out_path: Path) -> None:
 
 # ----------------------------
 # Load cleaned data + split
-# 前処理済みデータ読み込み + IDベースsplit
 # ----------------------------
 df = pl.read_parquet("data/jobs_cleaned.parquet")
 df = create_sample_split(df, id_column="job_id", training_frac=0.8)
@@ -48,21 +47,18 @@ y_test = test_df.select(TARGET).to_numpy().ravel()
 
 # ----------------------------
 # Load tuned models
-# チューニング済みモデルをロード
 # ----------------------------
 best_glm = load("modeling/models/best_glm.joblib")  # Pipeline(preprocess + ElasticNet)
 best_lgbm = load("modeling/models/best_lgbm.joblib")  # Pipeline(preprocess + LGBM)
 
 # ----------------------------
 # Predict (both trained on log-target)
-# 予測（両モデルともlog-target想定）
 # ----------------------------
 pred_glm = np.expm1(best_glm.predict(X_test))
 pred_lgbm = np.expm1(best_lgbm.predict(X_test))
 
 # ----------------------------
 # PS4-style evaluation table
-# PS4と同じ評価指標を出す
 # ----------------------------
 eval_df = X_test.copy()
 eval_df[TARGET] = y_test
@@ -79,7 +75,6 @@ print(
 
 # ----------------------------
 # Predicted vs Actual plots
-# 予測 vs 実測プロット
 # ----------------------------
 predicted_vs_actual(
     y_test,
@@ -97,7 +92,6 @@ predicted_vs_actual(
 
 # ----------------------------
 # Feature importance (Top 5) for LGBM
-# LGBMの特徴量重要度 top5
 # ----------------------------
 pre = best_lgbm.named_steps["preprocess"]
 model = best_lgbm.named_steps["model"]
@@ -124,11 +118,13 @@ plt.close()
 
 # ----------------------------
 # Partial Dependence Plots (PDP) for top 5
-# top5のPDPを作成
 # ----------------------------
 # Compute PDP on preprocessed matrix to avoid name issues
-# one-hot後の特徴量名を使うため、前処理後の行列でPDPを作る
+
 X_test_pre = pre.transform(X_test)
+
+if hasattr(X_test_pre, "toarray"):
+    X_test_pre = X_test_pre.toarray()
 
 for idx, fname in zip(top5_idx, top5_names):
     plt.figure()
