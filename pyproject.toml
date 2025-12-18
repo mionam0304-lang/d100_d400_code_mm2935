@@ -7,7 +7,7 @@ name = "d100_d400_code_mm2935"
 version = "0.1.0"
 
 [tool.setuptools]
-packages = ["analyse", "data"]
+packages = ["data","plotting","preprocessing"]
 
 [tool.setuptools_scm]
 version_scheme = "post-release"

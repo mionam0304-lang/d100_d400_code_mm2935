@@ -23,6 +23,6 @@ dependencies:
   # ml
   - glum
   - lightgbm
-  - scikit-learn
+  - scikit-learn>=1.2
   - pip:
       - kagglehub #追加できているかきちんと確認

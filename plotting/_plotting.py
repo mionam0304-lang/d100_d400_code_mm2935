@@ -40,7 +40,7 @@ def plot_group_median_salary(
             .drop("_ord")
         )
     else:
-        g = g.sort(group_col)
+        g = g.sort("median_salary")
 
     plt.figure()
     plt.bar(
@@ -54,3 +54,19 @@ def plot_group_median_salary(
     plt.title(f"Median Salary by {group_col} (n ≥ {min_n})")
     plt.tight_layout()
     plt.show()
+
+
+def plot_salary_scatter(df, corr_cols) -> None:
+
+    y = df["salary_usd"].to_numpy()
+
+    for xcol in corr_cols:
+        x = df[xcol].to_numpy()
+
+        plt.figure()
+        plt.scatter(x, y, alpha=0.3, s=10)
+        plt.xlabel(xcol)
+        plt.ylabel("salary_usd")
+        plt.title(f"salary_usd vs {xcol}")
+        plt.tight_layout()
+        plt.show()

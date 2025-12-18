@@ -1,8 +1,22 @@
+### Start this project
+
 conda d100_env create
 conda activate d100_env
 
 pre-commit install
 pip install --no-build-isolation -e .
+
+### How to carry out this project
+
+python -m modeling.model_training
+python -m modeling.model_tuning
+
+### Tests
+
+Run unit tests from the project root:
+
+```bash
+pytest -q
 
 ### Geographic aggregation of company locations
 
@@ -22,4 +36,16 @@ pip install --no-build-isolation -e .
 - Consumer & Transport：Transportation, Retail
 - Media & Entertainment：Media, Gaming
 - Consulting：Consulting
-- Other：上記以外
+- Other：
+
+features_columns: - "employment_type" - "company_size" - "education_required" - "years_experience" - "company_area" - "industry_group" - "num_skills"
+
+### 作成中
+
+model:
+name: "model_1"
+type: "classification"
+params:
+max_iter: 100
+random_state: 42
+```
