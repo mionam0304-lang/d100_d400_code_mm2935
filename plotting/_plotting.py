@@ -70,3 +70,51 @@ def plot_salary_scatter(df, corr_cols) -> None:
         plt.title(f"salary_usd vs {xcol}")
         plt.tight_layout()
         plt.show()
+
+
+def plot_top_skills(
+    df: pl.DataFrame,
+    top_n: int = 15,
+    min_n: int = 1,
+) -> None:
+    """
+    Plot top-N most frequently required skills.
+
+    Parameters
+    ----------
+    df : pl.DataFrame
+        Preprocessed DataFrame (must contain `skills_list`)
+    top_n : int
+        Number of top skills to display
+    min_n : int
+        Minimum number of job postings required for a skill
+    """
+
+    # explode skills_list -> one row per skill
+    df_skills = (
+        df.select("skills_list")
+        .explode("skills_list")
+        .rename({"skills_list": "skill"})
+        .filter(pl.col("skill").is_not_null() & (pl.col("skill") != ""))
+    )
+
+    # aggregate counts
+    skill_counts = (
+        df_skills.group_by("skill")
+        .agg(pl.len().alias("n_jobs"))
+        .filter(pl.col("n_jobs") >= min_n)
+        .sort("n_jobs", descending=True)
+        .head(top_n)
+    )
+
+    # plot (horizontal bar for readability)
+    plt.figure()
+    plt.barh(
+        skill_counts["skill"].to_list()[::-1],
+        skill_counts["n_jobs"].to_list()[::-1],
+    )
+    plt.xlabel("Number of job postings")
+    plt.ylabel("Skill")
+    plt.title(f"Top {top_n} Most Frequently Required Skills")
+    plt.tight_layout()
+    plt.show()

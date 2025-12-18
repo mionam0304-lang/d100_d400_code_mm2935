@@ -17,51 +17,62 @@ def preprocess(df: pl.DataFrame) -> pl.DataFrame:
     # ----------------------------
     # 2. Aggregate country into geographic areas
     # ----------------------------
+    AREA_MAP = {
+        "Asia": [
+            "China",
+            "India",
+            "Singapore",
+            "South Korea",
+            "Israel",
+            "Japan",
+        ],
+        "Europe": [
+            "Switzerland",
+            "France",
+            "Germany",
+            "United Kingdom",
+            "Austria",
+            "Sweden",
+            "Norway",
+            "Netherlands",
+            "Ireland",
+            "Denmark",
+            "Finland",
+        ],
+        "North America": [
+            "United States",
+            "Canada",
+        ],
+        "Australia": [
+            "Australia",
+        ],
+    }
+
+    def map_country_to_area(col_name: str) -> pl.Expr:
+        expr = pl.when(pl.lit(False)).then(pl.lit("Other"))
+
+        for area, countries in AREA_MAP.items():
+            expr = expr.when(pl.col(col_name).is_in(countries)).then(pl.lit(area))
+
+        return expr.otherwise(pl.lit("Other"))
+
+    # ----------------------------
+    # Aggregate company location into areas
+    # ----------------------------
+    df = df.with_columns(map_country_to_area("company_location").alias("company_area"))
+    # ----------------------------
+    # Aggregate employee residence into areas
+    # ----------------------------
     df = df.with_columns(
-        pl.when(
-            pl.col("company_location").is_in(
-                [
-                    "China",
-                    "India",
-                    "Singapore",
-                    "South Korea",
-                    "Israel",
-                    "Japan",
-                ]
-            )
+        map_country_to_area("employee_residence").alias("residence_area")
+    )
+    # ----------------------------
+    # Same country indicator
+    # ----------------------------
+    df = df.with_columns(
+        (pl.col("company_location") == pl.col("employee_residence")).alias(
+            "same_country"
         )
-        .then(pl.lit("Asia"))
-        .when(
-            pl.col("company_location").is_in(
-                [
-                    "Switzerland",
-                    "France",
-                    "Germany",
-                    "United Kingdom",
-                    "Austria",
-                    "Sweden",
-                    "Norway",
-                    "Netherlands",
-                    "Ireland",
-                    "Denmark",
-                    "Finland",
-                ]
-            )
-        )
-        .then(pl.lit("Europe"))
-        .when(
-            pl.col("company_location").is_in(
-                [
-                    "United States",
-                    "Canada",
-                ]
-            )
-        )
-        .then(pl.lit("North America"))
-        .when(pl.col("company_location") == "Australia")
-        .then(pl.lit("Australia"))
-        .otherwise(pl.lit("Other"))  # Please reconsider the clarification if it happens
-        .alias("company_area")
     )
 
     # ----------------------------

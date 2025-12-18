@@ -1,3 +1,13 @@
-from ._plotting import plot_group_median_salary, plot_salary_hist, plot_salary_scatter
+from ._plotting import (
+    plot_group_median_salary,
+    plot_salary_hist,
+    plot_salary_scatter,
+    plot_top_skills,
+)
 
-__all__ = ["plot_salary_hist", "plot_group_median_salary", "plot_salary_scatter"]
+__all__ = [
+    "plot_salary_hist",
+    "plot_group_median_salary",
+    "plot_salary_scatter",
+    "plot_top_skills",
+]
